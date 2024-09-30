@@ -1,6 +1,4 @@
-# Polyacetylene walltime scaling
-
-Energy extensivity:
+# Energy extensivity
 
 ```python
 import numpy as np
