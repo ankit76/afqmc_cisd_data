@@ -1,0 +1,77 @@
+# Hostname: gpua059.delta.ncsa.illinois.edu
+# System Type: Linux
+# Machine Type: x86_64
+# Processor: x86_64
+# Using GPU.
+# System: Linux
+# Node Name: gpua059.delta.ncsa.illinois.edu
+# Release: 4.18.0-477.58.1.el8_8.x86_64
+# Version: #1 SMP Wed May 22 13:46:53 EDT 2024
+# Machine: x86_64
+# Processor: x86_64
+# Number of MPI ranks: 1
+#
+# norb: 390
+# nelec: (31, 31)
+#
+# dt: 0.005
+# n_eql: 12
+# n_ene_blocks: 1
+# n_sr_blocks: 5
+# n_blocks: 120
+# n_walkers: 200
+# n_batch: 1
+# walker_type: rhf
+# trial: cisd
+# n_prop_steps: 50
+# seed: 799480
+# orbital_rotation: True
+# do_sr: True
+# symmetry: False
+# save_walkers: False
+# ene0: 0.0
+# free_projection: False
+#
+# Equilibration sweeps:
+#   Iter        Block energy      Walltime
+#     0      -4.642563586e+02     3.34e+01 
+#     1      -4.642525330e+02     3.09e+02 
+#     2      -4.643267822e+02     5.83e+02 
+#     3      -4.643494263e+02     8.54e+02 
+#     4      -4.643290710e+02     1.12e+03 
+#     5      -4.643574829e+02     1.39e+03 
+#     6      -4.643258972e+02     1.67e+03 
+#     7      -4.643508911e+02     1.94e+03 
+#     8      -4.643543701e+02     2.21e+03 
+#     9      -4.643351746e+02     2.48e+03 
+#    10      -4.643258972e+02     2.75e+03 
+#    11      -4.643329773e+02     3.02e+03 
+#    12      -4.643359985e+02     3.29e+03 
+#
+# Sampling sweeps:
+#  Iter        Mean energy          Stochastic error       Walltime
+     0      -4.643368225e+02                -              3.43e+03 
+    12      -4.643433226e+02                -              5.06e+03 
+    24      -4.643462641e+02                -              6.69e+03 
+    36      -4.643462700e+02                -              8.31e+03 
+    48      -4.643446626e+02        2.938166609e-03        9.94e+03 
+    60      -4.643423131e+02                -              1.16e+04 
+    72      -4.643414885e+02                -              1.32e+04 
+    84      -4.643408200e+02                -              1.48e+04 
+    96      -4.643410415e+02                -              1.65e+04 
+   108      -4.643406870e+02                -              1.81e+04 
+#
+# Number of large deviations: 0
+# Number of outliers in post: 0 
+#
+# Mean: -4.64340386e+02
+# Block size    # of blocks         Mean                Error
+      1              120       -4.64340386e+02       1.160528e-03
+      2               60       -4.64340386e+02       1.235008e-03
+      5               24       -4.64340386e+02       1.472723e-03
+     10               12       -4.64340386e+02       1.571731e-03
+     20                6       -4.64340386e+02       1.827398e-03
+     50                2       -4.64340581e+02       5.080997e-03
+AFQMC energy: -464.340386246135
+
+ph_afqmc walltime: 19568.592715263367

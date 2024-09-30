@@ -1,0 +1,407 @@
+#INFO: **** input file is /projects/bcdd/amahajan1/ad_afqmc/runs/n2/2.7/n2.py ****
+import sys, os
+import numpy as np
+from pyscf import gto, scf, cc, lib
+# import basis_set_exchange as bse
+from ad_afqmc import pyscf_interface
+import time
+
+norb_frozen = 2
+r = 2.7
+mol = gto.M(atom=f"N 0 0 {-r/2}; N 0 0 {r/2}", verbose=4, basis='ccpvdz', unit="bohr")
+
+umf = scf.UHF(mol)
+# chkfile = 'umf.chk'
+# umf.__dict__.update(lib.chkfile.load(chkfile, "scf"))
+umf.chkfile = 'umf.chk'
+umf.level_shift = 0.5
+umf.kernel()
+mo1 = umf.stability(external=True)[0]
+umf = umf.newton().run(mo1, umf.mo_occ)
+mo1 = umf.stability(external=True)[0]
+umf = umf.newton().run(mo1, umf.mo_occ)
+umf.stability()
+umf.analyze()
+
+start_time = time.time()
+mycc = cc.CCSD(umf)
+mycc.frozen = norb_frozen
+mycc.run()
+end_time = time.time()
+time_taken = end_time - start_time
+print(f"Time taken for CCSD calculation: {time_taken:.2f} seconds")
+
+pyscf_interface.prep_afqmc(mycc)
+
+start_time = time.time()
+et = mycc.ccsd_t()
+end_time = time.time()
+print(f"CCSD(T) energy: {mycc.e_tot + et}")
+time_taken = end_time - start_time
+print(f"Time taken for CCSD(T) calculation: {time_taken:.2f} seconds")
+
+exit()
+
+from ad_afqmc import config
+config.afqmc_config["use_gpu"] = True
+from ad_afqmc import run_afqmc
+options = {
+    "dt": 0.005,
+    "n_eql": 3,
+    "n_ene_blocks": 1,
+    "n_sr_blocks": 5,
+    "n_blocks": 200,
+    "n_walkers": 200,
+    "n_batch": 1,
+    "walker_type": "rhf",
+    "trial": "ucisd"
+}
+e_afqmc, err_afqmc = run_afqmc.run_afqmc(options=options)
+
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='cn039.delta.ncsa.illinois.edu', release='4.18.0-477.58.1.el8_8.x86_64', version='#1 SMP Wed May 22 13:46:53 EDT 2024', machine='x86_64')  Threads 20
+Python 3.12.4 | packaged by Anaconda, Inc. | (main, Jun 18 2024, 15:12:24) [GCC 11.2.0]
+numpy 2.1.0  scipy 1.14.1  h5py 3.11.0
+Date: Mon Sep  9 23:40:21 2024
+PySCF version 2.6.2
+PySCF path  /projects/bcdd/amahajan1/miniconda/lib/python3.12/site-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 2
+[INPUT] num. electrons = 14
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = bohr
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 N      0.000000000000   0.000000000000  -0.714389234742 AA    0.000000000000   0.000000000000  -1.350000000000 Bohr   0.0
+[INPUT]  2 N      0.000000000000   0.000000000000   0.714389234742 AA    0.000000000000   0.000000000000   1.350000000000 Bohr   0.0
+
+nuclear repulsion = 18.1481481481481
+number of shells = 10
+number of NR pGTOs = 52
+number of NR cGTOs = 28
+basis = ccpvdz
+ecp = {}
+CPU time:         3.64
+
+
+******** <class 'pyscf.scf.uhf.UHF'> ********
+method = UHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0.5
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 50
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = umf.chk
+max_memory 4000 MB (current use 132 MB)
+number electrons alpha = 7  beta = 7
+Set gradient conv threshold to 3.16228e-05
+init E= -108.117123138559
+  alpha nocc = 7  HOMO = -0.110412022157814  LUMO = 0.266718017783422
+  beta  nocc = 7  HOMO = -0.110345134154821  LUMO = 0.26708217850884
+cycle= 1 E= -108.713556359808  delta_E= -0.596  |g|= 0.227  |ddm|=  1.1
+  alpha nocc = 7  HOMO = -0.540475644723496  LUMO = 0.495789388497781
+  beta  nocc = 7  HOMO = -0.540813875603172  LUMO = 0.495471951954943
+cycle= 2 E= -108.736202109272  delta_E= -0.0226  |g|= 0.0384  |ddm|= 0.137
+  alpha nocc = 7  HOMO = -0.498348379901539  LUMO = 0.536616780572078
+  beta  nocc = 7  HOMO = -0.49850686840709  LUMO = 0.536466397656333
+cycle= 3 E= -108.737156068479  delta_E= -0.000954  |g|= 0.0162  |ddm|= 0.0271
+  alpha nocc = 7  HOMO = -0.499662961938524  LUMO = 0.535503613515019
+  beta  nocc = 7  HOMO = -0.499714396957864  LUMO = 0.535461694252061
+cycle= 4 E= -108.737374547905  delta_E= -0.000218  |g|= 0.00502  |ddm|= 0.0158
+  alpha nocc = 7  HOMO = -0.49966976571576  LUMO = 0.535655101954801
+  beta  nocc = 7  HOMO = -0.499683956822051  LUMO = 0.535643201829384
+cycle= 5 E= -108.737397751526  delta_E= -2.32e-05  |g|= 0.00136  |ddm|= 0.00552
+  alpha nocc = 7  HOMO = -0.499753100857898  LUMO = 0.535576561951508
+  beta  nocc = 7  HOMO = -0.499758784966363  LUMO = 0.535571371374529
+cycle= 6 E= -108.737399558314  delta_E= -1.81e-06  |g|= 0.000387  |ddm|= 0.00168
+  alpha nocc = 7  HOMO = -0.499737304516899  LUMO = 0.535603664651805
+  beta  nocc = 7  HOMO = -0.499739200709509  LUMO = 0.535601750502412
+cycle= 7 E= -108.737399708843  delta_E= -1.51e-07  |g|= 0.000111  |ddm|= 0.000563
+  alpha nocc = 7  HOMO = -0.499747387143522  LUMO = 0.535595718939578
+  beta  nocc = 7  HOMO = -0.499747759737221  LUMO = 0.535595332958033
+cycle= 8 E= -108.737399721333  delta_E= -1.25e-08  |g|= 3.14e-05  |ddm|= 0.000196
+  alpha nocc = 7  HOMO = -0.499747379132491  LUMO = 0.535595953819799
+  beta  nocc = 7  HOMO = -0.499747422953505  LUMO = 0.535595903120614
+cycle= 9 E= -108.737399722336  delta_E= -1e-09  |g|= 9.02e-06  |ddm|= 5.99e-05
+  alpha nocc = 7  HOMO = -0.499747428550575  LUMO = 0.535595905513592
+  beta  nocc = 7  HOMO = -0.499747412676549  LUMO = 0.535595920179141
+cycle= 10 E= -108.737399722417  delta_E= -8.11e-11  |g|= 2.61e-06  |ddm|= 1.81e-05
+  alpha nocc = 7  HOMO = -0.499747109561411  LUMO = 0.0355961017961963
+  beta  nocc = 7  HOMO = -0.499747165802428  LUMO = 0.035596047180966
+Extra cycle  E= -108.737399722423  delta_E= -6.48e-12  |g|= 8.46e-07  |ddm|= 5.94e-06
+converged SCF energy = -108.737399722423  <S^2> = 1.1368684e-13  2S+1 = 1
+<class 'pyscf.scf.uhf.UHF'> wavefunction has an internal instability.
+<class 'pyscf.scf.uhf.UHF'> wavefunction has a real -> complex instability
+<class 'pyscf.scf.uhf.UHF'> wavefunction has an UHF/UKS -> GHF/GKS instability.
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderUHF'> ********
+method = SecondOrderUHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0.5
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 50
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = umf.chk
+max_memory 4000 MB (current use 269 MB)
+number electrons alpha = 7  beta = 7
+******** <class 'pyscf.scf.uhf.UHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 50
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = umf.chk
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 4000 MB (current use 269 MB)
+Set conv_tol_grad to 3.16228e-05
+  alpha nocc = 7  HOMO = -0.5528356369594  LUMO = 0.134996922753503
+  beta  nocc = 7  HOMO = -0.552876037380201  LUMO = 0.134798479555513
+Initial guess E= -108.826648030847  |g|= 0.0944428
+macro= 0  E= -108.8336873628  delta_E= -0.00703933  |g|= 0.000495288  3 KF 12 JK
+macro= 1  E= -108.833687363115  delta_E= -3.15154e-10  |g|= 1.90001e-05  1 KF 3 JK
+Canonicalize SCF orbitals
+macro X = 2  E=-108.833687363115  |g|= 1.90001e-05  total 5 KF 18 JK
+converged SCF energy = -108.833687363115  <S^2> = 1.4948794  2S+1 = 2.6418776
+<class 'pyscf.soscf.newton_ah.SecondOrderUHF'> wavefunction is stable in the internal stability analysis
+<class 'pyscf.soscf.newton_ah.SecondOrderUHF'> wavefunction is stable in the real -> complex stability analysis
+<class 'pyscf.soscf.newton_ah.SecondOrderUHF'> wavefunction is stable in the UHF/UKS -> GHF/GKS stability analysis
+
+
+
+
+******** <class 'pyscf.soscf.newton_ah.SecondOrderUHF'> ********
+method = SecondOrderUHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0.5
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-09
+SCF conv_tol_grad = None
+SCF max_cycles = 50
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = umf.chk
+max_memory 4000 MB (current use 270 MB)
+number electrons alpha = 7  beta = 7
+******** <class 'pyscf.scf.uhf.UHF'> Newton solver flags ********
+SCF tol = 1e-09
+conv_tol_grad = None
+max. SCF cycles = 50
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = umf.chk
+max_cycle_inner = 12
+max_stepsize = 0.05
+ah_start_tol = 1e+09
+ah_level_shift = 0
+ah_conv_tol = 1e-12
+ah_lindep = 1e-14
+ah_start_cycle = 1
+ah_max_cycle = 40
+ah_grad_trust_region = 2.5
+kf_interval = 4
+kf_trust_region = 5
+canonicalization = True
+max_memory 4000 MB (current use 270 MB)
+Set conv_tol_grad to 3.16228e-05
+  alpha nocc = 7  HOMO = -0.541517065474466  LUMO = 0.14115216761552
+  beta  nocc = 7  HOMO = -0.541517222438418  LUMO = 0.141152005639474
+Initial guess E= -108.833687363115  |g|= 8.40029e-06
+macro= 0  E= -108.833687363203  delta_E= -8.77662e-11  |g|= 8.40029e-06  1 KF 3 JK
+Canonicalize SCF orbitals
+macro X = 1  E=-108.833687363203  |g|= 8.40029e-06  total 2 KF 5 JK
+converged SCF energy = -108.833687363203  <S^2> = 1.494893  2S+1 = 2.6418879
+<class 'pyscf.soscf.newton_ah.SecondOrderUHF'> wavefunction is stable in the internal stability analysis
+**** SCF Summaries ****
+Total Energy =                        -108.833687363203040
+Nuclear Repulsion Energy =              18.148148148148149
+One-electron Energy =                 -183.611098079111514
+Two-electron Energy =                   56.629262567760314
+**** MO energy ****
+                             alpha | beta                alpha | beta
+MO #1   energy= -15.7157139789126  | -15.7157146777467  occ= 1 | 1
+MO #2   energy= -15.6548015938702  | -15.6548008600878  occ= 1 | 1
+MO #3   energy= -1.27307956254446  | -1.2730796854117   occ= 1 | 1
+MO #4   energy= -0.815522458124548 | -0.815522427827519 occ= 1 | 1
+MO #5   energy= -0.587826845596023 | -0.587827052651338 occ= 1 | 1
+MO #6   energy= -0.587826809753437 | -0.587827034647888 occ= 1 | 1
+MO #7   energy= -0.54151499854622  | -0.541514957870461 occ= 1 | 1
+MO #8   energy= 0.141154568821475  | 0.141154702290064  occ= 0 | 0
+MO #9   energy= 0.141154576619143  | 0.141154704805433  occ= 0 | 0
+MO #10  energy= 0.388967421360961  | 0.388967456569159  occ= 0 | 0
+MO #11  energy= 0.89601933849173   | 0.896019192718114  occ= 0 | 0
+MO #12  energy= 0.896019359828292  | 0.896019205490813  occ= 0 | 0
+MO #13  energy= 0.907261655239483  | 0.907261549906032  occ= 0 | 0
+MO #14  energy= 0.971592010067306  | 0.971592135877219  occ= 0 | 0
+MO #15  energy= 1.0110073219254    | 1.01100733192582   occ= 0 | 0
+MO #16  energy= 1.07771797150072   | 1.07771817795146   occ= 0 | 0
+MO #17  energy= 1.07771798125773   | 1.07771818356307   occ= 0 | 0
+MO #18  energy= 1.45510637553222   | 1.45510640705483   occ= 0 | 0
+MO #19  energy= 1.71885350353306   | 1.71885347615138   occ= 0 | 0
+MO #20  energy= 1.71885350443599   | 1.71885347724291   occ= 0 | 0
+MO #21  energy= 1.86585837468228   | 1.86585823229548   occ= 0 | 0
+MO #22  energy= 1.86585837468228   | 1.86585823229549   occ= 0 | 0
+MO #23  energy= 2.16712266645905   | 2.16712279129061   occ= 0 | 0
+MO #24  energy= 2.16712266645906   | 2.16712279129061   occ= 0 | 0
+MO #25  energy= 2.32543329279403   | 2.32543328363784   occ= 0 | 0
+MO #26  energy= 2.64160974718012   | 2.64160976936613   occ= 0 | 0
+MO #27  energy= 2.64160974743214   | 2.64160977135101   occ= 0 | 0
+MO #28  energy= 3.08208596181634   | 3.08208598235354   occ= 0 | 0
+
+To work with the spin densities directly, `use mulliken_meta_spin()` only printing them here.
+
+ ** Mulliken spin pop alpha/beta on meta-lowdin orthogonal AOs **
+ ** Mulliken Spin Density (per AO)  **
+spin_pop of  0 N 1s       -0.00001
+spin_pop of  0 N 2s        0.04174
+spin_pop of  0 N 3s       -0.00069
+spin_pop of  0 N 2px       0.85193
+spin_pop of  0 N 2py       0.85193
+spin_pop of  0 N 2pz       0.13631
+spin_pop of  0 N 3px       0.00051
+spin_pop of  0 N 3py       0.00051
+spin_pop of  0 N 3pz      -0.00052
+spin_pop of  0 N 3dxy      0.00000
+spin_pop of  0 N 3dyz      0.00026
+spin_pop of  0 N 3dz^2     0.00057
+spin_pop of  0 N 3dxz      0.00026
+spin_pop of  0 N 3dx2-y2    0.00000
+spin_pop of  1 N 1s        0.00001
+spin_pop of  1 N 2s       -0.04174
+spin_pop of  1 N 3s        0.00069
+spin_pop of  1 N 2px      -0.85193
+spin_pop of  1 N 2py      -0.85193
+spin_pop of  1 N 2pz      -0.13631
+spin_pop of  1 N 3px      -0.00051
+spin_pop of  1 N 3py      -0.00051
+spin_pop of  1 N 3pz       0.00052
+spin_pop of  1 N 3dxy     -0.00000
+spin_pop of  1 N 3dyz     -0.00026
+spin_pop of  1 N 3dz^2    -0.00057
+spin_pop of  1 N 3dxz     -0.00026
+spin_pop of  1 N 3dx2-y2   -0.00000
+ ** Mulliken Spin Density (per atom)  **
+spin density of  0 N =      1.88281
+spin density of  1 N =     -1.88281
+ ** Mulliken pop alpha/beta on meta-lowdin orthogonal AOs **
+ ** Mulliken pop       alpha | beta **
+pop of  0 N 1s        0.99999 | 1.00000   
+pop of  0 N 2s        0.92293 | 0.88119   
+pop of  0 N 3s        0.00305 | 0.00374   
+pop of  0 N 2px       0.92463 | 0.07270   
+pop of  0 N 2py       0.92463 | 0.07270   
+pop of  0 N 2pz       0.65889 | 0.52258   
+pop of  0 N 3px       0.00060 | 0.00008   
+pop of  0 N 3py       0.00060 | 0.00008   
+pop of  0 N 3pz       0.00064 | 0.00116   
+pop of  0 N 3dxy      0.00000 | 0.00000   
+pop of  0 N 3dyz      0.00113 | 0.00086   
+pop of  0 N 3dz^2     0.00321 | 0.00264   
+pop of  0 N 3dxz      0.00113 | 0.00086   
+pop of  0 N 3dx2-y2    0.00000 | 0.00000   
+pop of  1 N 1s        1.00000 | 0.99999   
+pop of  1 N 2s        0.88119 | 0.92293   
+pop of  1 N 3s        0.00374 | 0.00305   
+pop of  1 N 2px       0.07270 | 0.92463   
+pop of  1 N 2py       0.07270 | 0.92463   
+pop of  1 N 2pz       0.52258 | 0.65889   
+pop of  1 N 3px       0.00008 | 0.00060   
+pop of  1 N 3py       0.00008 | 0.00060   
+pop of  1 N 3pz       0.00116 | 0.00064   
+pop of  1 N 3dxy      0.00000 | 0.00000   
+pop of  1 N 3dyz      0.00086 | 0.00113   
+pop of  1 N 3dz^2     0.00264 | 0.00321   
+pop of  1 N 3dxz      0.00086 | 0.00113   
+pop of  1 N 3dx2-y2    0.00000 | 0.00000   
+In total             7.00000 | 7.00000   
+ ** Mulliken atomic charges   ( Nelec_alpha | Nelec_beta ) **
+charge of  0N =     -0.00000  (     4.44141      2.55860 )
+charge of  1N =      0.00000  (     2.55859      4.44140 )
+Dipole moment(X, Y, Z, Debye):  0.00001, -0.00001,  0.00000
+
+******** <class 'pyscf.cc.uccsd.UCCSD'> ********
+CC2 = 0
+CCSD nocc = (5, 5), nmo = (26, 26)
+frozen orbitals 2
+max_cycle = 50
+direct = 0
+conv_tol = 1e-07
+conv_tol_normt = 1e-06
+diis_space = 6
+diis_start_cycle = 0
+diis_start_energy_diff = 1e+09
+max_memory 4000 MB (current use 272 MB)
+Init t2, MP2 energy = -0.217846509881829
+Init E_corr(UCCSD) = -0.217846509891662
+cycle = 1  E_corr(UCCSD) = -0.236084493067461  dE = -0.0182379832  norm(t1,t2) = 0.11501
+cycle = 2  E_corr(UCCSD) = -0.249633095077666  dE = -0.013548602  norm(t1,t2) = 0.0628322
+cycle = 3  E_corr(UCCSD) = -0.255407360405456  dE = -0.00577426533  norm(t1,t2) = 0.0587011
+cycle = 4  E_corr(UCCSD) = -0.281929519999944  dE = -0.0265221596  norm(t1,t2) = 0.0484053
+cycle = 5  E_corr(UCCSD) = -0.290522118798611  dE = -0.0085925988  norm(t1,t2) = 0.024555
+cycle = 6  E_corr(UCCSD) = -0.294382924662807  dE = -0.00386080586  norm(t1,t2) = 0.00672298
+cycle = 7  E_corr(UCCSD) = -0.294379220218248  dE = 3.70444456e-06  norm(t1,t2) = 0.00290214
+cycle = 8  E_corr(UCCSD) = -0.294661950337317  dE = -0.000282730119  norm(t1,t2) = 0.0015961
+cycle = 9  E_corr(UCCSD) = -0.294667664277357  dE = -5.71394004e-06  norm(t1,t2) = 0.000789487
+cycle = 10  E_corr(UCCSD) = -0.29464517565302  dE = 2.24886243e-05  norm(t1,t2) = 0.000325787
+cycle = 11  E_corr(UCCSD) = -0.294653709144735  dE = -8.53349172e-06  norm(t1,t2) = 0.000131597
+cycle = 12  E_corr(UCCSD) = -0.294645970382734  dE = 7.738762e-06  norm(t1,t2) = 5.70517e-05
+cycle = 13  E_corr(UCCSD) = -0.29464341939467  dE = 2.55098806e-06  norm(t1,t2) = 2.13996e-05
+cycle = 14  E_corr(UCCSD) = -0.294641726667464  dE = 1.69272721e-06  norm(t1,t2) = 1.00515e-05
+cycle = 15  E_corr(UCCSD) = -0.29464063412017  dE = 1.09254729e-06  norm(t1,t2) = 6.88054e-06
+cycle = 16  E_corr(UCCSD) = -0.294639085583437  dE = 1.54853673e-06  norm(t1,t2) = 4.96289e-06
+cycle = 17  E_corr(UCCSD) = -0.294637568594607  dE = 1.51698883e-06  norm(t1,t2) = 2.94269e-06
+cycle = 18  E_corr(UCCSD) = -0.294637046922573  dE = 5.21672034e-07  norm(t1,t2) = 1.2844e-06
+cycle = 19  E_corr(UCCSD) = -0.29463701330274  dE = 3.36198328e-08  norm(t1,t2) = 6.5773e-07
+UCCSD converged
+E(UCCSD) = -109.1283243765057  E_corr = -0.2946370133027403
+Time taken for CCSD calculation: 30.68 seconds
+#
+# Preparing AFQMC calculation
+# If you import pyscf cc modules and use MPI for AFQMC in the same script, finalize MPI before calling the AFQMC driver.
+# Calculating Cholesky integrals
+# Finished calculating Cholesky integrals
+#
+# Size of the correlation space:
+# Number of electrons: (5, 5)
+# Number of basis functions: 26
+# Number of Cholesky vectors: 172
+#
+UCCSD(T) correction = -0.0189836489600022
+CCSD(T) energy: -109.14730802546575
+Time taken for CCSD(T) calculation: 0.30 seconds

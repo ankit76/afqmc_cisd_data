@@ -1,0 +1,71 @@
+# Hostname: gpua044.delta.ncsa.illinois.edu
+# System Type: Linux
+# Machine Type: x86_64
+# Processor: x86_64
+# Using GPU.
+# System: Linux
+# Node Name: gpua044.delta.ncsa.illinois.edu
+# Release: 4.18.0-477.70.1.el8_8.x86_64
+# Version: #1 SMP Fri Aug 16 10:41:15 EDT 2024
+# Machine: x86_64
+# Processor: x86_64
+# Number of MPI ranks: 1
+#
+# norb: 87
+# nelec: (10, 10)
+#
+# dt: 0.005
+# n_eql: 3
+# n_ene_blocks: 1
+# n_sr_blocks: 5
+# n_blocks: 400
+# n_walkers: 400
+# walker_type: rhf
+# trial: ucisd
+# n_prop_steps: 50
+# seed: 657347
+# orbital_rotation: True
+# do_sr: True
+# symmetry: False
+# save_walkers: False
+# ene0: 0.0
+# free_projection: False
+# n_batch: 1
+#
+# Equilibration sweeps:
+#   Iter        Block energy      Walltime
+#     0      -2.743039318e+02     9.89e+00 
+#     1      -2.743510132e+02     6.18e+01 
+#     2      -2.743495789e+02     1.13e+02 
+#     3      -2.743500061e+02     1.59e+02 
+#
+# Sampling sweeps:
+#  Iter        Mean energy          Stochastic error       Walltime
+     0      -2.743472290e+02                -              1.69e+02 
+    40      -2.743514074e+02        6.492037203e-04        3.57e+02 
+    80      -2.743515432e+02        4.576312660e-04        5.46e+02 
+   120      -2.743511381e+02        3.705879963e-04        7.34e+02 
+   160      -2.743509089e+02        3.286861502e-04        9.23e+02 
+   200      -2.743507641e+02        2.822436945e-04        1.11e+03 
+   240      -2.743507274e+02        2.648184512e-04        1.30e+03 
+   280      -2.743508558e+02        2.404105588e-04        1.49e+03 
+   320      -2.743507220e+02        2.176205432e-04        1.68e+03 
+   360      -2.743506954e+02        2.047371962e-04        1.86e+03 
+#
+# Number of large deviations: 0
+# Number of outliers in post: 0 
+#
+# Mean: -2.74350767e+02
+# Block size    # of blocks         Mean                Error
+      1              400       -2.74350767e+02       1.856927e-04
+      2              200       -2.74350767e+02       1.928536e-04
+      5               80       -2.74350767e+02       1.696402e-04
+     10               40       -2.74350767e+02       1.870265e-04
+     20               20       -2.74350767e+02       2.043579e-04
+     50                8       -2.74350767e+02       2.405773e-04
+    100                4       -2.74350767e+02       2.488024e-04
+# Stocahstic error estimate: 1.928536e-04
+#
+AFQMC energy: -274.3508 +/- 0.0002
+
+ph_afqmc walltime: 2049.7621219158173

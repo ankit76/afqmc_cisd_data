@@ -1,0 +1,47 @@
+# Hostname: gpua021.delta.ncsa.illinois.edu
+# System Type: Linux
+# Machine Type: x86_64
+# Processor: x86_64
+# Using GPU.
+# System: Linux
+# Node Name: gpua021.delta.ncsa.illinois.edu
+# Release: 4.18.0-477.58.1.el8_8.x86_64
+# Version: #1 SMP Wed May 22 13:46:53 EDT 2024
+# Machine: x86_64
+# Processor: x86_64
+# Number of MPI ranks: 1
+#
+# norb: 439
+# nelec: (33, 29)
+#
+# dt: 0.005
+# n_eql: 3
+# n_ene_blocks: 1
+# n_sr_blocks: 5
+# n_blocks: 500
+# n_walkers: 200
+# n_batch: 2
+# walker_type: rhf
+# trial: ucisd
+# n_prop_steps: 50
+# seed: 475853
+# orbital_rotation: True
+# do_sr: True
+# symmetry: False
+# save_walkers: False
+# ene0: 0.0
+# free_projection: False
+#
+# Equilibration sweeps:
+#   Iter        Block energy      Walltime
+#     0      -1.729879297e+03     8.41e+01 
+#     1      -1.729933350e+03     5.31e+03 
+#     2      -1.729940552e+03     1.05e+04 
+#     3      -1.729938477e+03     1.58e+04 
+#
+# Sampling sweeps:
+#  Iter        Mean energy          Stochastic error       Walltime
+     0      -1.729921753e+03                -              1.63e+04 
+    50      -1.729943190e+03        1.698510634e-03        4.24e+04 
+   100      -1.729942328e+03        1.207104466e-03        6.86e+04 
+   150      -1.729942979e+03        9.357287665e-04        9.47e+04 
